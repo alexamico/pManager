@@ -74,7 +74,6 @@ public class XMLReposotory implements Repository {
 	 */
 	public XMLReposotory(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException,
 			NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-		// this.password = password;
 		pbeKeySpec = new PBEKeySpec(password);
 		secretKeyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
 		secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
@@ -164,7 +163,7 @@ public class XMLReposotory implements Repository {
 	}
 
 	/**
-	 * Inserts the <code>Record</code> rec in
+	 * Inserts the <code>Record</code> rec in the repo.
 	 * 
 	 * 
 	 * @param
@@ -205,7 +204,6 @@ public class XMLReposotory implements Repository {
 		for (int i = 0; i < list.getLength(); i++) {
 			element = (Element) list.item(i);
 
-			// if rec == element --> found and break
 			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle())) {
 				found = true;
 				break;
@@ -221,7 +219,7 @@ public class XMLReposotory implements Repository {
 	}
 
 	/**
-	 * Update 
+	 * 
 	 * 
 	 * 
 	 * @param rec 
@@ -257,7 +255,8 @@ public class XMLReposotory implements Repository {
 	 * @param search if <code>search</code> is null <code>query</code> 
 	 * 					returns all records,
 	 * 
-	 * @return
+	 * @return all the <code>Records</code> that match (also partially) 
+	 * 			<code>search</code> 
 	 */
 	@Override
 	public Vector<Record> query(String search) {

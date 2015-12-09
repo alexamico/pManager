@@ -46,7 +46,6 @@ import javax.swing.table.TableModel;
 public class MainWindow extends JFrame implements ActionListener, TableModelListener, TableCellRenderer, Runnable {
 	private static final long serialVersionUID = 1L;
 
-	/* GUI */
 	private static final String title = "pManager";
 	private static final String[] options = new String[] { "OK", "Cancel" };
 	private static final int SERVICE = 0;
@@ -75,6 +74,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			new JLabel("Username"), usernameTextField, new JLabel("Password"), passwordTextField,
 			new JLabel("Repeat Password"), password2TextField };
 
+	private DefaultTableModel model;
 	private Repository repo;
 	private Vector<String> columsName;
 	private final JFileChooser fc = new JFileChooser();
@@ -88,6 +88,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
+	 * Inits the top toolbar w/ all the necessary buttons
 	 * 
 	 */
 	private void initToolbar() {
@@ -180,8 +181,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		table.getColumnModel().getColumn(USERNAME).setCellRenderer(this);
 		table.getColumnModel().getColumn(PASSWORD).setCellRenderer(this);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 		JScrollPane scrollPane = new JScrollPane(table);
+		model = (DefaultTableModel) table.getModel();
 		this.add(scrollPane, BorderLayout.CENTER);
 		this.pack();
 	}
@@ -196,7 +197,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 				return;
 
 			this.repo = new XMLReposotory(pass.getPassword());
-			pass.setText(null);
+			pass.setText(null); // very important!
 
 			if (!repo.create()) {
 				JOptionPane.showMessageDialog(this, "Error!!");
@@ -257,19 +258,18 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	private void insertRecord() {
 		JOptionPane.showMessageDialog(this, inputs, "pManager", JOptionPane.PLAIN_MESSAGE);
 
-		if (!passwordTextField.getText().equals(password2TextField.getText())) {
+		if (!passwordTextField.getText().equals(password2TextField.getText()))
 			JOptionPane.showMessageDialog(this, "Passwords don't match!");
-			insertRecord();
-		} else {
+		else {
 			Record temp = new XMLRecord(serviceTextField.getText(), usernameTextField.getText(),
-					password2TextField.getText());
-			this.repo.insert(temp);
-			Vector<String> row = new Vector<String>();
-			row.add(temp.getTitle());
-			row.add(temp.getUsername());
-			row.add(temp.getPassword());
-			DefaultTableModel model = (DefaultTableModel) table.getModel();
-			model.addRow(row);
+					passwordTextField.getText());
+			if (this.repo.insert(temp)) {
+				Vector<String> row = new Vector<String>();
+				row.add(temp.getTitle());
+				row.add(temp.getUsername());
+				row.add(temp.getPassword());
+				model.addRow(row);
+			}
 		}
 	}
 
@@ -278,13 +278,17 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	private void deleteRecord() {
 		Record temp = new XMLRecord();
-		temp.setTitle((String) table.getValueAt(table.getSelectedRow(), SERVICE));
-		temp.setUsername((String) table.getValueAt(table.getSelectedRow(), USERNAME));
-		temp.setPassowrd((String) table.getValueAt(table.getSelectedRow(), PASSWORD));
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		int row = table.getSelectedRow();
+		
+		if (row == -1)
+			return;
+		
+		temp.setTitle((String) table.getValueAt(row, SERVICE));
+		temp.setUsername((String) table.getValueAt(row, USERNAME));
+		temp.setPassowrd((String) table.getValueAt(row, PASSWORD));
 
-		this.repo.delete(temp);
-		model.removeRow(table.getSelectedRow());
+		if (this.repo.delete(temp))
+			model.removeRow(table.getSelectedRow());
 	}
 
 	/**
@@ -292,7 +296,12 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 * 
 	 */
 	private void copyUser() {
-		StringSelection selected = new StringSelection((String) (table.getValueAt(table.getSelectedRow(), USERNAME)));
+		int row = table.getSelectedRow();
+		
+		if (row == -1)
+			return;
+		
+		StringSelection selected = new StringSelection((String) (table.getValueAt(row, USERNAME)));
 		clipboard.setContents(selected, selected);
 	}
 
@@ -301,7 +310,12 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 * 
 	 */
 	private void copyPassword() {
-		StringSelection selected = new StringSelection((String) (table.getValueAt(table.getSelectedRow(), PASSWORD)));
+		int row = table.getSelectedRow();
+		
+		if (row == -1)
+			return;
+		
+		StringSelection selected = new StringSelection((String) (table.getValueAt(row, PASSWORD)));
 		clipboard.setContents(selected, selected);
 	}
 
@@ -328,7 +342,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			this.copyUser();
 		else if (but == copyPass)
 			this.copyPassword();
-		else if (but == search)
+		else if (but == search) //TODO
 			;
 		else if (but == exit)
 			System.exit(0);
