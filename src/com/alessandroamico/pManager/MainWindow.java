@@ -37,6 +37,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+/**
+ * 
+ * @author Alessandro Amico
+ * @version %I% %G% %U%
+ *
+ */
 public class MainWindow extends JFrame implements ActionListener, TableModelListener, TableCellRenderer, Runnable {
 	private static final long serialVersionUID = 1L;
 
@@ -79,12 +85,6 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	public MainWindow() {
 		super(title);
-	}
-	
-	private void clear() {
-		repo = null;
-		table = null;
-		this.pack();
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
-	 * 
+	 * init passowrd dialog's pane
 	 */
 	private void initPanel() {
 		label = new JLabel("Enter the password:");
@@ -150,8 +150,9 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
+	 * Fills the central table w/ all the records passed.
 	 * 
-	 * @param vect
+	 * @param vect <code>Records</code> ...  
 	 */
 	private void initTable(Vector<Record> vect) {
 		Vector<Vector<String>> res = new Vector<Vector<String>>();
@@ -189,7 +190,6 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 * 
 	 */
 	private void createRepo() {
-		this.clear();
 		try {
 			if ((JOptionPane.showOptionDialog(this, panel, "pManager", JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 					null, options, options[0])) != 0)
@@ -199,7 +199,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			pass.setText(null);
 
 			if (!repo.create()) {
-				JOptionPane.showMessageDialog(this, "Errore!!");
+				JOptionPane.showMessageDialog(this, "Error!!");
 				repo = null;
 			}
 
@@ -212,10 +212,10 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	/**
 	 * 
-	 * @param returnVal
+	 * 
+	 * @param returnVal <code>JFileChooser</code> macro for ...
 	 */
 	private void openRepo(int returnVal) {
-		this.clear();
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
 				File file = fc.getSelectedFile();
@@ -241,7 +241,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	/**
 	 * 
-	 * @param returnVal
+	 * @param returnVal <code>JFileChooser</code> macro for ...
 	 */
 	private void saveRepo(int returnVal) {
 		if (returnVal == JFileChooser.APPROVE_OPTION && this.repo != null) {
@@ -273,6 +273,9 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void deleteRecord() {
 		Record temp = new XMLRecord();
 		temp.setTitle((String) table.getValueAt(table.getSelectedRow(), SERVICE));
@@ -285,6 +288,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
+	 * Copy username of selected row (service) in the system clipboard
 	 * 
 	 */
 	private void copyUser() {
@@ -293,6 +297,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
+	 * Copy password of selected row (service) in the system clipboard
 	 * 
 	 */
 	private void copyPassword() {
@@ -302,6 +307,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	/**
 	 * 
+	 * 
+	 * @param e the <code>ActionEvent</code> performed 
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -351,6 +358,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	}
 	
+	@Override
 	public void run() {
 		initPanel();
 
