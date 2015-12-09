@@ -93,15 +93,15 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	private void initToolbar() {
 		toolbar = new JToolBar();
-		newRepo = new JButton(new ImageIcon("icons/newRepo.png"));
-		openRepo = new JButton(new ImageIcon("icons/openRepo.png"));
-		saveRepo = new JButton(new ImageIcon("icons/save.png"));
-		insertRecord = new JButton(new ImageIcon("icons/insertRecord.png"));
-		deleteRecord = new JButton(new ImageIcon("icons/deleteRecord.png"));
-		copyUser = new JButton(new ImageIcon("icons/copyUser.png"));
-		copyPass = new JButton(new ImageIcon("icons/copyPass.png"));
-		search = new JButton(new ImageIcon("icons/search.png"));
-		exit = new JButton(new ImageIcon("icons/exit.png"));
+		newRepo = new JButton(new ImageIcon(getClass().getResource("/newRepo.png")));
+		openRepo = new JButton(new ImageIcon(getClass().getResource("/openRepo.png")));
+		saveRepo = new JButton(new ImageIcon(getClass().getResource("/save.png")));
+		insertRecord = new JButton(new ImageIcon(getClass().getResource("/insertRecord.png")));
+		deleteRecord = new JButton(new ImageIcon(getClass().getResource("/deleteRecord.png")));
+		copyUser = new JButton(new ImageIcon(getClass().getResource("/copyUser.png")));
+		copyPass = new JButton(new ImageIcon(getClass().getResource("/copyPass.png")));
+		search = new JButton(new ImageIcon(getClass().getResource("/search.png")));
+		exit = new JButton(new ImageIcon(getClass().getResource("/exit.png")));
 
 		newRepo.setToolTipText("Create new Repository");
 		openRepo.setToolTipText("Open existing Repository");
