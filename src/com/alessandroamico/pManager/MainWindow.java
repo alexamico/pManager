@@ -37,6 +37,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+import com.apple.eawt.Application;
+
 /**
  * 
  * @author Alessandro Amico
@@ -84,6 +86,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	public MainWindow() {
 		super(title);
+		Application.getApplication().setDockIconImage((new ImageIcon(getClass().getResource("/icon.png"))).getImage());
 	}
 
 	/**
