@@ -41,7 +41,6 @@ import javax.swing.table.TableModel;
  * 
  * @author Alessandro Amico
  * @version %I% %G% %U%
- *
  */
 public class MainWindow extends JFrame implements ActionListener, TableModelListener, TableCellRenderer, Runnable {
 	private static final long serialVersionUID = 1L;
@@ -81,7 +80,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	private Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 	/**
-	 * 
+	 * Constructs an empty (invisible) JFrame
 	 */
 	public MainWindow() {
 		super(title);
@@ -89,7 +88,6 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	/**
 	 * Inits the top toolbar w/ all the necessary buttons
-	 * 
 	 */
 	private void initToolbar() {
 		toolbar = new JToolBar();
@@ -153,7 +151,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	/**
 	 * Fills the central table w/ all the records passed.
 	 * 
-	 * @param vect <code>Records</code> ...  
+	 * @param vect <code>Records</code> to be inserted  
 	 */
 	private void initTable(Vector<Record> vect) {
 		Vector<Vector<String>> res = new Vector<Vector<String>>();
@@ -260,6 +258,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 * 
 	 */
 	private void insertRecord() {
+		boolean inserted = false;
 		JOptionPane.showMessageDialog(this, inputs, "pManager", JOptionPane.PLAIN_MESSAGE);
 
 		if (!passwordTextField.getText().equals(password2TextField.getText()))
@@ -277,6 +276,14 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 				row.add(temp.getUsername());
 				row.add(temp.getPassword());
 				model.addRow(row);
+				inserted = true;
+			}
+			
+			if (inserted) {
+				serviceTextField.setText("");
+				usernameTextField.setText("");
+				passwordTextField.setText("");
+				password2TextField.setText("");
 			}
 		}
 	}
