@@ -207,7 +207,10 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			initTable(repo.query(null));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
+			JOptionPane.showMessageDialog(this, "Failed to save repo: "+ e.toString());
+			this.repo = null;
 			e.printStackTrace();
+			return;
 		}
 	}
 
@@ -235,6 +238,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 					| NoSuchPaddingException | InvalidAlgorithmParameterException e) {
 				e.printStackTrace();
 				this.repo = null;
+				JOptionPane.showMessageDialog(this, "Failed to save repo: "+ e.toString());
 				return;
 			}
 		}
@@ -261,8 +265,12 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		if (!passwordTextField.getText().equals(password2TextField.getText()))
 			JOptionPane.showMessageDialog(this, "Passwords don't match!");
 		else {
+			if (serviceTextField.getText().isEmpty())
+				return;
+
 			Record temp = new XMLRecord(serviceTextField.getText(), usernameTextField.getText(),
 					passwordTextField.getText());
+			
 			if (this.repo.insert(temp)) {
 				Vector<String> row = new Vector<String>();
 				row.add(temp.getTitle());
