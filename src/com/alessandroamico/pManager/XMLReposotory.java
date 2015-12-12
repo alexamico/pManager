@@ -61,6 +61,7 @@ public class XMLReposotory implements Repository {
 	byte[] salt = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	/* UTILITY */
+	private static final int REP = 100;
 	DocumentBuilderFactory docFactory;
 	DocumentBuilder docBuilder;
 	PBEKeySpec pbeKeySpec;
@@ -77,7 +78,7 @@ public class XMLReposotory implements Repository {
 		pbeKeySpec = new PBEKeySpec(password);
 		secretKeyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
 		secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
-		pbeParameterSpec = new PBEParameterSpec(salt, 100);
+		pbeParameterSpec = new PBEParameterSpec(salt, REP);
 		cipher = Cipher.getInstance("PBEWithMD5AndTripleDES");
 	}
 

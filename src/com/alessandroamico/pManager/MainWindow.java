@@ -9,6 +9,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Vector;
 
 import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -37,8 +39,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import com.apple.eawt.Application;
-
 /**
  * 
  * @author Alessandro Amico
@@ -47,7 +47,7 @@ import com.apple.eawt.Application;
 public class MainWindow extends JFrame implements ActionListener, TableModelListener, TableCellRenderer, Runnable {
 	private static final long serialVersionUID = 1L;
 
-	private static final String title = "pManager";
+	private static final String TITLE = "pManager";
 	private static final String[] options = new String[] { "OK", "Cancel" };
 	private static final int SERVICE = 0;
 	private static final int USERNAME = 1;
@@ -85,8 +85,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 * Constructs an empty (invisible) JFrame
 	 */
 	public MainWindow() {
-		super(title);
-		Application.getApplication().setDockIconImage((new ImageIcon(getClass().getResource("/icon.png"))).getImage());
+		super(TITLE);
 	}
 
 	/**
@@ -395,7 +394,14 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		initPanel();
 
 		initToolbar();
+		//this.setIconImage((new ImageIcon(getClass().getResource("/icon.png"))).getImage());
 		this.setLocationRelativeTo(null);
+		try {
+			this.setIconImage(ImageIO.read(getClass().getResource("/icon.png")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
