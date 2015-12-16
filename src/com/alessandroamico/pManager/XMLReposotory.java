@@ -202,21 +202,20 @@ public class XMLReposotory implements Repository {
 		NodeList list = doc.getElementsByTagName("record");
 		Element element = null;
 		boolean found = false;
-		for (int i = 0; i < list.getLength(); i++) {
+		
+		for (int i = 0; i < list.getLength() && !found; i++) {
 			element = (Element) list.item(i);
 
-			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle())) {
+			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle()))
 				found = true;
-				break;
-			}
 		}
 
-		if (!found)
-			return false;
+		if (found) {		
+			Element root = doc.getDocumentElement();
+			root.removeChild(element);
+		}
 		
-		Element root = doc.getDocumentElement();
-		root.removeChild(element);
-		return true;
+		return found;
 	}
 
 	/**
@@ -232,22 +231,20 @@ public class XMLReposotory implements Repository {
 		NodeList list = doc.getElementsByTagName("record");
 		Element element = null;
 		boolean found = false;
-		for (int i = 0; i < list.getLength(); i++) {
+		
+		for (int i = 0; i < list.getLength() && !found; i++) {
 			element = (Element) list.item(i);
 
-			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle())) {
+			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle()))
 				found = true;
-				break;
-			}
 		}
 
-		if (!found)
-			return false;
+		if (found) {
+			element.getElementsByTagName("username").item(0).setTextContent(rec.getUsername());
+			element.getElementsByTagName("password").item(0).setTextContent(rec.getPassword());
+		}
 		
-		element.getElementsByTagName("username").item(0).setTextContent(rec.getUsername());
-		element.getElementsByTagName("password").item(0).setTextContent(rec.getPassword());
-		
-		return true;
+		return found;
 	}
 
 	/**
@@ -283,6 +280,7 @@ public class XMLReposotory implements Repository {
 				}
 			}
 		}
+		
 		return result;
 	}
 
