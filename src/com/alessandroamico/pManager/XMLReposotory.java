@@ -116,7 +116,7 @@ public class XMLReposotory implements Repository {
 	 */
 	@Override
 	public boolean open(String path) {
-		if (path == null)
+		if (path == null || path.isEmpty())
 			return false;
 
 		try {
@@ -202,74 +202,72 @@ public class XMLReposotory implements Repository {
 		NodeList list = doc.getElementsByTagName("record");
 		Element element = null;
 		boolean found = false;
-		for (int i = 0; i < list.getLength(); i++) {
+
+		for (int i = 0; i < list.getLength() && !found; i++) {
 			element = (Element) list.item(i);
 
-			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle())) {
+			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle()))
 				found = true;
-				break;
-			}
 		}
 
-		if (!found)
-			return false;
-		
-		Element root = doc.getDocumentElement();
-		root.removeChild(element);
-		return true;
+		if (found) {
+			Element root = doc.getDocumentElement();
+			root.removeChild(element);
+		}
+
+		return found;
 	}
 
 	/**
 	 * 
 	 * 
 	 * 
-	 * @param rec 
-	 * @return <code>true</code> if file was updated correctly, 
-	 * 			<code>false</code> otherwise.
+	 * @param rec
+	 * @return <code>true</code> if file was updated correctly,
+	 *         <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean update(Record rec) {
 		NodeList list = doc.getElementsByTagName("record");
 		Element element = null;
 		boolean found = false;
-		for (int i = 0; i < list.getLength(); i++) {
+
+		for (int i = 0; i < list.getLength() && !found; i++) {
 			element = (Element) list.item(i);
 
-			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle())) {
+			if (element.getElementsByTagName("title").item(0).getTextContent().equals(rec.getTitle()))
 				found = true;
-				break;
-			}
 		}
 
-		if (!found)
-			return false;
-		
-		element.getElementsByTagName("username").item(0).setTextContent(rec.getUsername());
-		element.getElementsByTagName("password").item(0).setTextContent(rec.getPassword());
-		
-		return true;
+		if (found) {
+			element.getElementsByTagName("username").item(0).setTextContent(rec.getUsername());
+			element.getElementsByTagName("password").item(0).setTextContent(rec.getPassword());
+		}
+
+		return found;
 	}
 
 	/**
 	 * 
 	 * 
-	 * @param search if <code>search</code> is null <code>query</code> 
-	 * 					returns all records,
+	 * @param search
+	 *            if <code>search</code> is null <code>query</code> returns all
+	 *            records,
 	 * 
-	 * @return all the <code>Records</code> that match (also partially) 
-	 * 			<code>search</code> 
+	 * @return all the <code>Records</code> that match (also partially)
+	 *         <code>search</code>
 	 */
 	@Override
 	public Vector<Record> query(String search) {
 		NodeList nList;
 		Vector<Record> result = new Vector<Record>();
-		
+
 		if (search == null)
 			search = "";
 
 		if ((nList = doc.getElementsByTagName("record")) == null)
 			return result;
-		
+
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node nNode = nList.item(temp);
 			if (nNode != null && nNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -283,14 +281,15 @@ public class XMLReposotory implements Repository {
 				}
 			}
 		}
+		
 		return result;
 	}
 
 	/**
 	 * 
 	 * @param file
-	 * @return <code>true</code> if file was saved correctly, 
-	 * 			<code>false</code> otherwise.
+	 * @return <code>true</code> if file was saved correctly, <code>false</code>
+	 *         otherwise.
 	 */
 	@Override
 	public boolean save(File file) {

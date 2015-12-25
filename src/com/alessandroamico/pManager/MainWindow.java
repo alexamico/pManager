@@ -9,7 +9,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +16,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Vector;
 
 import javax.crypto.NoSuchPaddingException;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -38,6 +36,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+
+import com.apple.eawt.Application;
 
 /**
  * 
@@ -86,6 +86,12 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	public MainWindow() {
 		super(TITLE);
+		if (System.getProperty("os.name").contains("indows")) {
+			setIconImage(new ImageIcon((getClass().getResource("/icon.png"))).getImage());
+		} else if (System.getProperty("os.name").contains("Mac")) {
+			Application.getApplication()
+					.setDockIconImage(new ImageIcon((getClass().getResource("/icon.png"))).getImage());
+		}
 	}
 
 	/**
@@ -153,7 +159,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	/**
 	 * Fills the central table w/ all the records passed.
 	 * 
-	 * @param vect <code>Records</code> to be inserted  
+	 * @param vect
+	 *            <code>Records</code> to be inserted
 	 */
 	private void initTable(Vector<Record> vect) {
 		Vector<Vector<String>> res = new Vector<Vector<String>>();
@@ -173,7 +180,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 		table = new JTable(res, columsName) {
 			@Override
-		    public boolean isCellEditable(int row, int column) {
+			public boolean isCellEditable(int row, int column) {
 				return column == 0 ? false : true;
 			}
 		};
@@ -207,7 +214,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			initTable(repo.query(null));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException e) {
-			JOptionPane.showMessageDialog(this, "Failed to save repo: "+ e.toString());
+			JOptionPane.showMessageDialog(this, "Failed to save repo: " + e.toString());
 			this.repo = null;
 			e.printStackTrace();
 			return;
@@ -217,7 +224,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	/**
 	 * 
 	 * 
-	 * @param returnVal <code>JFileChooser</code> macro for ...
+	 * @param returnVal
+	 *            <code>JFileChooser</code> macro for ...
 	 */
 	private void openRepo(int returnVal) {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -238,7 +246,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 					| NoSuchPaddingException | InvalidAlgorithmParameterException e) {
 				e.printStackTrace();
 				this.repo = null;
-				JOptionPane.showMessageDialog(this, "Failed to save repo: "+ e.toString());
+				JOptionPane.showMessageDialog(this, "Failed to save repo: " + e.toString());
 				return;
 			}
 		}
@@ -246,7 +254,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 	/**
 	 * 
-	 * @param returnVal <code>JFileChooser</code> macro for ...
+	 * @param returnVal
+	 *            <code>JFileChooser</code> macro for ...
 	 */
 	private void saveRepo(int returnVal) {
 		if (returnVal == JFileChooser.APPROVE_OPTION && this.repo != null) {
@@ -271,7 +280,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 
 			Record temp = new XMLRecord(serviceTextField.getText(), usernameTextField.getText(),
 					passwordTextField.getText());
-			
+
 			if (this.repo.insert(temp)) {
 				Vector<String> row = new Vector<String>();
 				row.add(temp.getTitle());
@@ -280,7 +289,7 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 				model.addRow(row);
 				inserted = true;
 			}
-			
+
 			if (inserted) {
 				serviceTextField.setText("");
 				usernameTextField.setText("");
@@ -296,10 +305,10 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	private void deleteRecord() {
 		Record temp = new XMLRecord();
 		int row = table.getSelectedRow();
-		
+
 		if (row == -1)
 			return;
-		
+
 		temp.setTitle((String) table.getValueAt(row, SERVICE));
 		temp.setUsername((String) table.getValueAt(row, USERNAME));
 		temp.setPassowrd((String) table.getValueAt(row, PASSWORD));
@@ -314,10 +323,10 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	private void copyUser() {
 		int row = table.getSelectedRow();
-		
+
 		if (row == -1)
 			return;
-		
+
 		StringSelection selected = new StringSelection((String) (table.getValueAt(row, USERNAME)));
 		clipboard.setContents(selected, selected);
 	}
@@ -328,10 +337,10 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	 */
 	private void copyPassword() {
 		int row = table.getSelectedRow();
-		
+
 		if (row == -1)
 			return;
-		
+
 		StringSelection selected = new StringSelection((String) (table.getValueAt(row, PASSWORD)));
 		clipboard.setContents(selected, selected);
 	}
@@ -339,7 +348,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	/**
 	 * 
 	 * 
-	 * @param e the <code>ActionEvent</code> performed 
+	 * @param e
+	 *            the <code>ActionEvent</code> performed
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -359,12 +369,12 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 			this.copyUser();
 		else if (but == copyPass)
 			this.copyPassword();
-		else if (but == search) //TODO
+		else if (but == search) // TODO
 			;
 		else if (but == exit)
 			System.exit(0);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -388,22 +398,14 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 				hasFocus, row, column);
 
 	}
-	
+
 	@Override
 	public void run() {
 		initPanel();
-
 		initToolbar();
-		//this.setIconImage((new ImageIcon(getClass().getResource("/icon.png"))).getImage());
-		this.setLocationRelativeTo(null);
-		try {
-			this.setIconImage(ImageIO.read(getClass().getResource("/icon.png")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.pack();
-		this.setVisible(true);
-    }
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pack();
+		setVisible(true);
+	}
 }
