@@ -179,6 +179,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		}
 
 		table = new JTable(res, columsName) {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return column == 0 ? false : true;
@@ -235,8 +237,8 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 						JOptionPane.PLAIN_MESSAGE, null, options, options[0])) != 0)
 					return;
 				this.repo = new XMLReposotory(pass.getPassword());
-				pass.setText(null);
-				if (!repo.open(file.getAbsolutePath())) {
+				pass.setText(null); // very important!
+				if (!repo.open(file.getPath())) {
 					JOptionPane.showMessageDialog(this, "Failed to open repo: wrong password?");
 					repo = null;
 					return;
@@ -266,13 +268,14 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 	}
 
 	/**
-	 * 
+	 * Shows a message dialog to insert a record and inserts the record if and
+	 * only if the title/service is not empty
 	 */
 	private void insertRecord() {
 		boolean inserted = false;
 		JOptionPane.showMessageDialog(this, inputs, "pManager", JOptionPane.PLAIN_MESSAGE);
 
-		if (!passwordTextField.getText().equals(password2TextField.getText()))
+		if (!(passwordTextField.getText().equals(password2TextField.getText())))
 			JOptionPane.showMessageDialog(this, "Passwords don't match!");
 		else {
 			if (serviceTextField.getText().isEmpty())
@@ -408,4 +411,5 @@ public class MainWindow extends JFrame implements ActionListener, TableModelList
 		pack();
 		setVisible(true);
 	}
+
 }

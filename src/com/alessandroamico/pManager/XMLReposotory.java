@@ -210,6 +210,7 @@ public class XMLReposotory implements Repository {
 				found = true;
 		}
 
+
 		if (found) {
 			Element root = doc.getDocumentElement();
 			root.removeChild(element);
